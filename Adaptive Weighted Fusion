@@ -1,0 +1,63 @@
+function [out]=adpWFuse(im,K,n)
+
+close all
+
+wnim=(2*K)+1; % window size
+
+nim = im;
+
+% Padding
+proci=padarray(nim,[K K],'replicate'); % proci = image for processing
+[row ,clm]=size(proci); % Size of image
+nim=proci;
+%For Image Variance
+Ivar = var(nim(:));
+
+L=[-K:K];
+iter=length(L); % iterations
+% Create waitbar.
+h = waitbar(0,'Wait...');
+
+for r=(1+K):(row-K) % Indexing Row of noisy pixel        
+    for s=(1+K):(clm-K) % Indexing Coloumn of noisy pixel
+        
+                % Remove Noise from Image
+                pixR=nim(r,s);  % nim= noisy image
+                if  pixR==255 || pixR==0 % Checking for Noisy Pixel                          
+                    for i=1:iter % Indexing Row of window
+                        for j=1:iter % Indexing Column of window                
+                            wnim(i,j)=nim((r+L(i)),(s+L(j))); % Extracting noisy window                    
+                        end
+                    end
+                    % Checking complete winow is noisy or not
+                    % If it is noisy then replace by mean of the pixel.
+                    %N1=find(wnim==255); N2=find(wnim==0);
+                    N1=find(max(wnim(:))); N2=find(min(wnim(:)));
+                    if (length(N1)+length(N2))==9
+                       %Local variance
+                        tmp = wnim(:);
+                        lvar=mean(tmp.^2)-mean(tmp).^2;
+%                         rp=lvar;
+                        %rp=trimf(wnim); % Calling Trimmed mean filter                                                               
+%                     else
+%                         rp=mean(wnim(:)); 
+                        
+                        if (lvar==0 || Ivar>lvar)
+%                             proci(r,s)=1;
+                           rp = 1;
+% %                         end
+                        else
+%                             proci(r,s)=Ivar./rp; % Raplacing noisy pixel in orignal image.
+                            rp = Ivar./lvar;   
+                        end
+                         proci(r,s)=rp;
+                    end
+%                     proci(r,s)=rp;
+                end                               
+    end
+waitbar(r/(row-r));
+end
+close(h)
+
+out1=rpadd(proci,K); % Calling another function to remove padding
+out = out1;
