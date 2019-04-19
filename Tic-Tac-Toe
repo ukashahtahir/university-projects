@@ -1,0 +1,124 @@
+#include<iostream>
+using namespace std;
+void game();
+int main()
+{
+	char ask;
+	do
+	{
+		game();
+		cout << "Play Again?Enter A else E:";
+		cin >> ask;
+	} while (ask == 'A' || ask == 'a');
+	system("pause");
+	return 0;
+}
+void game()
+{
+	int cas = 0, t;
+	char arr[3][3] = { { 'A', 'B', 'C' }, { 'D', 'E', 'F' }, { 'G', 'H', 'I' } };
+	char res = '\0', ch, pos, p1 = 'X', p2 = '0';
+	for (int k = 0; k<9 && res == '\0'; k++)
+	{
+		bool chk = true;
+		cout << "Player 1: X\nPlayer 2: 0\n";
+		for (int i = 0; i<3; i++)
+		{
+			cout << "\n\t\t";
+			for (int j = 0; j<3; j++)
+			{
+				cout << "   " << arr[i][j];
+				if (j != 2)
+					cout << "   |";
+			}
+			cout << "\n\n";
+		}
+		cas++;
+		if (cas % 2 == 1)
+			t = 1;
+		else
+			t = 2;
+		cout << "Turn Of Player " << t << ".Chose Position:";
+		cin >> pos;
+		pos = static_cast<char>(toupper(pos));
+		do
+		{
+			for (int i = 0; i<3; i++)
+			{
+				for (int j = 0; j<3; j++)
+				{
+					if (pos == arr[i][j])
+					{
+						if (t == 1)
+							arr[i][j] = p1;
+						else
+							arr[i][j] = p2;
+						chk = false;
+					}
+				}
+			}
+			if (chk)
+			{
+				cout << "Invalid Entery.Choose Again:";
+				cin >> pos;
+				pos = static_cast<char>(toupper(pos));
+			}
+		} while (chk);
+		system("cls");
+		if (arr[0][0] == arr[0][1] && arr[0][1] == arr[0][2])
+		{
+			res = arr[0][0];
+		}
+		else if (arr[1][0] == arr[1][1] && arr[1][1] == arr[1][2])
+		{
+			res = arr[1][0];
+		}
+		else if (arr[2][0] == arr[2][1] && arr[2][1] == arr[2][2])
+		{
+			res = arr[2][0];
+		}
+		else if (arr[0][0] == arr[1][0] && arr[1][0] == arr[2][0])
+		{
+			res = arr[0][0];
+		}
+		else if (arr[0][1] == arr[1][1] && arr[1][1] == arr[2][1])
+		{
+			res = arr[0][1];
+		}
+		else if (arr[0][2] == arr[1][2] && arr[1][2] == arr[2][2])
+		{
+			res = arr[0][2];
+		}
+		else if (arr[0][0] == arr[1][1] && arr[1][1] == arr[2][2])
+		{
+			res = arr[0][0];
+		}
+		else if (arr[0][2] == arr[1][1] && arr[1][1] == arr[2][0])
+		{
+			res = arr[0][2];
+		}
+
+	}
+	cout << "Player 1: X\nPlayer 2: 0\n";
+	for (int i = 0; i<3; i++)
+	{
+		cout << "\n\t\t";
+		for (int j = 0; j<3; j++)
+		{
+			cout << "   " << arr[i][j];
+			if (j != 2)
+				cout << "   |";
+		}
+		cout << "\n\n";
+	}
+
+
+	if (res == 'X')
+		cout << "Player 1 Wins.";
+	else if (res == '0')
+		cout << "Player 2 Wins.";
+	else
+		cout << "Match Ties.";
+
+	cout << "\n\n";
+}
